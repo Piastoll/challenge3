@@ -29,7 +29,7 @@ keep coming in under it.
 
 <ProblemTable ticket={4471} {tickets} />
 
-Each report is counted once, by its id. The export repeats some reports across pages.
+Each report is counted once, by its id (the export repeats some reports across pages), and filed under its tenant's cause, as the desk counts. The one-day moves stay filed under parser and also get their own row.
 
 ## How to tell them apart
 

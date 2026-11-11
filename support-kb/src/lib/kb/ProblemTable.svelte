@@ -20,7 +20,7 @@
 <p class="sum">
   <strong>{split.total}</strong> reports in #{ticket} ·
   <strong>{split.groups.length}</strong>
-  {split.groups.length === 1 ? 'problem' : 'problems'}
+  {split.groups.length === 1 ? 'problem' : 'problems'} · counted as the desk files them
 </p>
 
 <table>
@@ -31,7 +31,7 @@
     {#each split.groups as g (g.problem)}
       <tr>
         <td><code>{g.problem}</code> {PROBLEMS[g.problem].name}<br /><small>{PROBLEMS[g.problem].shows}</small></td>
-        <td><strong>{g.reports.length}</strong></td>
+        <td><strong>{g.reports.length}</strong>{#if g.filedUnder}<br /><small>also in <code>{g.filedUnder}</code></small>{/if}</td>
         <td>{g.tenants}</td>
         <td class="muted">{channels(g.channels)}</td>
         <td class="muted">{g.firstSeen} → {g.lastSeen}</td>
@@ -42,6 +42,10 @@
     {/each}
   </tbody>
 </table>
+
+{#each split.groups.filter((g) => g.filedUnder) as g (g.problem)}
+  <p class="muted">{g.reports.length} <code>{g.problem}</code> reports are filed under <code>{g.filedUnder}</code> by tenant, as the desk counts them, and also listed in their own row.</p>
+{/each}
 
 <style>
   .sum { font-size: 1.1rem; }

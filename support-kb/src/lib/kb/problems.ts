@@ -1,6 +1,8 @@
-// What a ticket actually holds, problem by problem. causes.ts decides parser vs hint by tenant;
-// this file adds what the bodies show and the tenant can't: a booking that moved by one day did
-// not have its day and month swapped. The desk already read those reports (desk-notes.json).
+// What a ticket actually holds, problem by problem. Counts follow the desk's own view (causes.ts):
+// every report is filed under its tenant's cause. On top of that, this file shows what the bodies
+// show and the tenant can't: a booking that moved by one day did not have its day and month
+// swapped. The desk already read those reports (desk-notes.json). They stay filed where the desk
+// filed them, and they get their own row and ticket, marked `filedUnder`.
 import { causeOf, uniqueById, type Report, type Tenant } from '#lib/kb/causes';
 
 export type Problem = 'parser' | 'hint' | 'shift' | 'unplaced';
@@ -21,8 +23,7 @@ export const PROBLEMS: Record<Problem, { name: string; shows: string }> = {
   unplaced: { name: 'No tenant on file', shows: 'Cannot be placed without a tenant.' },
 };
 
-export function problemOf(r: Report, t: Tenant | undefined, shiftIds: readonly string[]): Problem {
-  if (shiftIds.includes(r.id)) return 'shift';
+export function problemOf(r: Report, t: Tenant | undefined): Problem {
   return causeOf(r, t) ?? 'unplaced';
 }
 
@@ -33,6 +34,8 @@ export type ProblemGroup = {
   channels: Record<string, number>;
   firstSeen: string;
   lastSeen: string;
+  // Set when these reports are also counted in another row, where the desk files them.
+  filedUnder?: Problem;
 };
 
 export function splitTicket(
@@ -44,10 +47,14 @@ export function splitTicket(
   const merged = uniqueById(all).filter((r) => r.mergedInto === ticket);
   const by = new Map<Problem, Report[]>();
   for (const r of merged) {
-    const p = problemOf(r, tenantOf(r), shiftIds);
+    const p = problemOf(r, tenantOf(r));
     by.set(p, [...(by.get(p) ?? []), r]);
   }
-  const groups = [...by.entries()]
+  const shift = merged.filter((r) => shiftIds.includes(r.id));
+  const filedUnder = [...new Set(shift.map((r) => problemOf(r, tenantOf(r))))];
+  const rows: [Problem, Report[]][] = [...by.entries()];
+  if (shift.length) rows.push(['shift', shift]);
+  const groups = rows
     .map(([problem, rs]) => {
       const days = rs.map((r) => r.receivedAt.slice(0, 10)).sort();
       return {
@@ -57,6 +64,7 @@ export function splitTicket(
         channels: rs.reduce<Record<string, number>>((n, r) => ({ ...n, [r.channel]: (n[r.channel] ?? 0) + 1 }), {}),
         firstSeen: days[0],
         lastSeen: days[days.length - 1],
+        filedUnder: problem === 'shift' && filedUnder.length === 1 ? filedUnder[0] : undefined,
       };
     })
     .sort((a, b) => b.reports.length - a.reports.length);

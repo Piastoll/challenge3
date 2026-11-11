@@ -4,7 +4,7 @@ MEGA.dev S01E03. The support desk merged 412 date reports into #4471 and marked 
 
 | Ticket | Problem | Reports |
 |---|---|---|
-| [#1](https://github.com/Piastoll/challenge3/issues/1) | Shared parser reads day-first dates month first | 374 |
+| [#1](https://github.com/Piastoll/challenge3/issues/1) | Shared parser reads day-first dates month first | 379 (incl. the 5 in #3, as the desk files them) |
 | [#2](https://github.com/Piastoll/challenge3/issues/2) | booking-v3 form hint says MM/DD/YYYY to day-first tenants | 33 |
 | [#3](https://github.com/Piastoll/challenge3/issues/3) | Bookings move by one day across time zones | 5 |
 
