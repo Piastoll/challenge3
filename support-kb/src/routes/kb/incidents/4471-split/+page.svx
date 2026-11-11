@@ -4,7 +4,7 @@ title: '#4471 split · three problems, not one'
 owner: support desk
 status: open
 reviewed: 2026-11-11
-signature: Art
+signature: 'v1.eyJzdWIiOiIxNjU2OSIsImF1ZCI6ImNoYWxsZW5nZTp3aGF0LWl0LXNob3dzIiwiaWF0IjoxNzk0MzU3NzAxLCJleHAiOjE3OTQ0NDQxMDF9.PwyVypIYPkzdG0aZjM65jHWBcqNx-Ghs5J1Hr3rRfSE'
 ---
 
 <script>
