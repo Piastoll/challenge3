@@ -1,0 +1,62 @@
+---
+layout: runbook
+title: '#4471 split · three problems, not one'
+owner: support desk
+status: open
+reviewed: 2026-11-11
+signature: Art
+---
+
+<script>
+  import ProblemTable from '#lib/kb/ProblemTable.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+
+  const repo = 'https://github.com/Piastoll/challenge3/issues';
+  const tickets = { parser: `${repo}/1`, hint: `${repo}/2`, shift: `${repo}/3` };
+</script>
+
+[#4471](/kb/incidents/4471) is marked *known: one issue, one fix queued*. Read the reports and it
+holds three problems. The queued parser fix closes the biggest one and leaves the other two
+running.
+
+<Callout kind="warn">
+Don't close #4471 when the parser fix ships. The booking-v3 hint and the one-day moves will
+keep coming in under it.
+</Callout>
+
+## What #4471 holds
+
+<ProblemTable ticket={4471} {tickets} />
+
+Each report is counted once, by its id. The export repeats some reports across pages.
+
+## How to tell them apart
+
+- **parser**: day and month swap places (7 April arrives as 4 July). It comes from a day-first
+  tenant through the app, email, or a booking-v2 form. The tenant's locale decides this, not
+  the reporter's browser.
+- **hint**: the same swap, but only through the **booking-v3** form of a day-first tenant. The
+  form's hint asks for `MM/DD/YYYY`, so people type the month first, and the form reads it day
+  first. The parser fix doesn't touch the hint: fix the hint, or read the form the way the hint
+  asks.
+- **shift**: the month stays and the day moves by one (Tuesday 12 May shows as Monday 11 May,
+  and Lisbon and Toronto get different days for the same meeting). A swap can't do that. Look
+  at time-zone and DST handling when invites are sent.
+
+## Why they ended up together
+
+- [Decision 0001](/kb/decisions/0001-dedupe-by-subject) merges on subject line alone. All three
+  problems arrive with the same subjects ("Wrong day on the invite", "Dates mixed up"), so all
+  three merged into one ticket.
+- Intake tags reports from the reporter's **browser** locale. The cause depends on the
+  **tenant**: its locale and its booking form. The tags are wrong in both directions, so don't
+  split by tag.
+
+## For the desk
+
+1. Keep #4471 open for the parser problem only.
+2. Move the hint and shift reports to their own tickets, linked in the table above.
+3. Decision 0001 needs a replacement record. Decisions aren't edited after they're accepted.
+
+<RenderStamp {signature} />
