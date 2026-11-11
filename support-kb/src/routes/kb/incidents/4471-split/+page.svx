@@ -16,13 +16,18 @@ signature: Art
   const tickets = { parser: `${repo}/1`, hint: `${repo}/2`, shift: `${repo}/3` };
 </script>
 
-[#4471](/kb/incidents/4471) is marked *known: one issue, one fix queued*. Read the reports and it
-holds three problems. The queued parser fix closes the biggest one and leaves the other two
-running.
+[#4471](/kb/incidents/4471) was marked *known: one issue, one fix queued*. Read the reports and it
+holds three problems. Engineering closed #4471 on 5 October 2026, and that closed two of them:
+
+| problem | state | ticket |
+|---|---|---|
+| `parser` | **fixed**: `fix(dates): parse dd/mm for eu locales` | [#1](https://github.com/Piastoll/challenge3/issues/1) closed |
+| `hint` | **won't fix**: booking-v3 form retired | [#2](https://github.com/Piastoll/challenge3/issues/2) closed |
+| `shift` | **open**: nobody has worked on it | [#3](https://github.com/Piastoll/challenge3/issues/3) open |
 
 <Callout kind="warn">
-Don't close #4471 when the parser fix ships. The booking-v3 hint and the one-day moves will
-keep coming in under it.
+#4471 is closed, but the one-day moves aren't fixed. Neither the parser fix nor retiring
+booking-v3 touches them. File new one-day reports under #3, not as a reopen of #4471.
 </Callout>
 
 ## What #4471 holds
@@ -38,8 +43,7 @@ Each report is counted once, by its id (the export repeats some reports across p
   the reporter's browser.
 - **hint**: the same swap, but only through the **booking-v3** form of a day-first tenant. The
   form's hint asks for `MM/DD/YYYY`, so people type the month first, and the form reads it day
-  first. The parser fix doesn't touch the hint: fix the hint, or read the form the way the hint
-  asks.
+  first. The parser fix doesn't touch the hint. It ended when booking-v3 was retired.
 - **shift**: the month stays and the day moves by one (Tuesday 12 May shows as Monday 11 May,
   and Lisbon and Toronto get different days for the same meeting). A swap can't do that. Look
   at time-zone and DST handling when invites are sent.
@@ -55,8 +59,9 @@ Each report is counted once, by its id (the export repeats some reports across p
 
 ## For the desk
 
-1. Keep #4471 open for the parser problem only.
-2. Move the hint and shift reports to their own tickets, linked in the table above.
+1. Treat parser and hint as done. A new month/day swap after 5 October is a regression, so
+   give it a new ticket.
+2. Send every one-day move to #3 and keep it open until time-zone handling is fixed.
 3. Decision 0001 needs a replacement record. Decisions aren't edited after they're accepted.
 
 <RenderStamp {signature} />
